@@ -9,6 +9,7 @@ namespace WTFMessageAPI.DAL
     {
         private readonly ApplicationDBContext _context;
         public List<Message> Messages { get; set; }
+        private readonly DateTimeOffset localTime = TimeZoneInfo.ConvertTime(DateTimeOffset.Now, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
         public MessageManager(ApplicationDBContext context)
         {
             _context = context;
@@ -17,7 +18,7 @@ namespace WTFMessageAPI.DAL
 
         public async Task<List<Message>> GetAllMessages()
         {
-            if(Messages == null || !Messages.Any())
+            if (Messages == null || !Messages.Any())
             {
                 Messages = await GetDBMessages();
             }
@@ -51,8 +52,8 @@ namespace WTFMessageAPI.DAL
             {
                 await GetAllMessages();
             }
-
-            message.DateTime = DateTime.Now;
+            //message.DateTime = DateTime.Now;
+            message.DateTime = localTime.DateTime;
             _context.Messages.Add(message); //spara inlägget
             await _context.SaveChangesAsync();
         }
